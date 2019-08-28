@@ -1,0 +1,284 @@
+{
+	"info": {
+		"_postman_id": "5e12b4e4-e694-40e2-924a-46e949c4e4dd",
+		"name": "PostmanAutomation_AgilCRMRestApi_Contacts",
+		"description": "Automating Contacts(Create, Search, Update and Delete)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6ca0ba03-ef0d-4e8d-9a74-9ec251b6b3b7",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"//Store ContactID, FirstName, LastName , Email Address and PhoneNo",
+							"pm.environment.set(\"contactId\", jsonData.id);",
+							"pm.environment.set(\"firstName\", jsonData.properties[0].value);",
+							"pm.environment.set(\"lastName\", jsonData.properties[1].value);",
+							"pm.environment.set(\"email\", jsonData.properties[2].value);",
+							"pm.environment.set(\"phoneNo\", jsonData.properties[3].value);",
+							"",
+							"",
+							"//status code check",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//check for firstname, lastname , email and phoneNo value post creation",
+							"pm.test(\"check for FirstName, LastName , Email, PhoneNo values post creation\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.properties[0].value).to.eql(pm.iterationData.get(\"fName\"));",
+							"    pm.expect(jsonData.properties[1].value).to.eql(pm.iterationData.get(\"lName\"));",
+							"    pm.expect(jsonData.properties[2].value).to.eql(pm.iterationData.get(\"emailId\"));",
+							"    pm.expect(parseInt(jsonData.properties[3].value)).to.eql(parseInt(pm.iterationData.get(\"phoneNumber\")));",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "377d7548-ad95-49e8-a880-7071c152baac",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"star_value\": \"4\",\r\n    \"lead_score\": \"92\",\r\n    \"tags\": [\r\n        \"Lead\",\r\n        \"Likely Buyer\"\r\n    ],\r\n    \"properties\": [\r\n        {\r\n            \"type\": \"SYSTEM\",\r\n            \"name\": \"first_name\",\r\n            \"value\": \"{{fName}}\"\r\n        },\r\n        {\r\n            \"type\": \"SYSTEM\",\r\n            \"name\": \"last_name\",\r\n            \"value\": \"{{lName}}\"\r\n        },\r\n        {\r\n            \"type\": \"SYSTEM\",\r\n            \"name\": \"email\",\r\n            \"subtype\": \"work\",\r\n            \"value\": \"{{emailId}}\"\r\n        },\r\n        {\r\n            \"type\": \"SYSTEM\",\r\n            \"name\": \"phone\",\r\n            \"subtype\": \"work\",\r\n            \"value\": \"{{phoneNumber}}\"\r\n        }\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "{{URL}}dev/api/contacts",
+					"host": [
+						"{{URL}}dev"
+					],
+					"path": [
+						"api",
+						"contacts"
+					]
+				},
+				"description": "Creating Contacts"
+			},
+			"response": []
+		},
+		{
+			"name": "Read Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b39a844c-b676-4545-b87e-a2c0c9044f66",
+						"exec": [
+							"//Check for status code",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}dev/api/contacts/{{contactId}}",
+					"host": [
+						"{{URL}}dev"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Read Contact post creation"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "85a705ea-88c4-427d-8d03-7d34b75e4aa6",
+						"exec": [
+							"//check for status code",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"//Check if PhoneNo is Prefixed with 91",
+							"pm.test(\"Check if PhoneNumber is updated with prefix +91\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var phonenumber = pm.environment.get(\"updatedPhoneNo\");",
+							"    pm.expect(parseInt(jsonData.properties[3].value)).to.eql(parseInt(phonenumber));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7c70d8b8-372c-4e7d-a6c9-7b202dc59399",
+						"exec": [
+							"//append 91 to phoneNumber",
+							"var uPhoneNo = pm.environment.get(\"phoneNo\");",
+							"var no = \"+91\";",
+							"var updatedPhoneNo = no + uPhoneNo;",
+							"pm.environment.set(\"updatedPhoneNo\", updatedPhoneNo);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{contactId}}\",\r\n    \"properties\": [\r\n         {\r\n            \"type\": \"SYSTEM\",\r\n            \"name\": \"phone\",\r\n            \"subtype\": \"work\",\r\n            \"value\": \"{{updatedPhoneNo}}\"\r\n        }\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "{{URL}}dev/api/contacts/edit-properties",
+					"host": [
+						"{{URL}}dev"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"edit-properties"
+					]
+				},
+				"description": "Update the contact by contactId"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Contact",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1e92fcc-6c15-4283-980f-b8d352d4d14f",
+						"exec": [
+							"//Check for status code 204 No Content",
+							"",
+							"",
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status code name has string 'No Content'\", function () {",
+							"    pm.response.to.have.status(\"No Content\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}dev/api/contacts/{{contactId}}",
+					"host": [
+						"{{URL}}dev"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"{{contactId}}"
+					]
+				},
+				"description": "Delete the contact by contactId"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{api}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f43df7c3-da8b-4b2a-8dd5-f8c0a24a3d73",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "910c226a-16ae-4691-9fcf-214fad019b77",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

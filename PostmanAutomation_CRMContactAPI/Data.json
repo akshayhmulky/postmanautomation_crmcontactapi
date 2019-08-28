@@ -1,0 +1,20 @@
+[
+{
+"fName" : "Tom",
+"lName" : "Cruise",
+"emailId" : "tommy@gmail.com",
+"phoneNumber" : "2222222222"
+},
+{
+"fName" : "Brad",
+"lName" : "Pitt",
+"emailId" : "braddy@gmail.com",
+"phoneNumber" : "4444444444"
+},
+{
+"fName" : "Angelina",
+"lName" : "Jolie",
+"emailId" : "angel@gmail.com",
+"phoneNumber" : "6666666666"
+}
+]
